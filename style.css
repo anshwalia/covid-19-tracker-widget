@@ -1,0 +1,67 @@
+html{
+    padding: 5px;
+    background-color: rgba(0,0,0,0);
+    width: 100%;
+}
+
+body{
+    background-color: rgba(0,0,0,0);
+    color: #aaccff;
+    font-family: 'Segoe UI', 'Segoe UI', Tahoma, sans-serif;
+    overflow: hidden;
+    -webkit-app-region: drag;
+}
+
+button{
+    -webkit-app-region: no-drag;
+}
+
+canvas{
+    -webkit-app-region: no-drag;
+}
+
+#mainWindow{
+    display: none;
+    background-color: rgba(0,0,0,0.5);
+}
+
+#exitBtn{
+    padding: 0px;
+    -webkit-app-region: no-drag;
+}
+
+#minimizeWindow{
+    -webkit-app-region: no-drag;
+}
+
+.card-header{
+    background-color: rgba(50,50,50,1);
+}
+
+.card-body{
+    background-color: rgba(50,50,50,1);
+}
+
+.card-footer{
+    background-color: rgba(50,50,50,1);
+}
+
+#mainCard{
+    background-color: rgba(0,0,0,0);
+}
+
+#titleBar{
+    background-color: rgba(0,0,0,0);
+}
+
+#chartSection{
+    display: none;
+}
+
+#appIcon{
+    -webkit-app-region: drag;
+}
+
+#appTitle{
+    -webkit-app-region: drag;
+}
