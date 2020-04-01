@@ -64,15 +64,4 @@ class Webscraper{
 
 }
 
-// const d = new Webscraper();
-
-// async function exec(){
-//     await d.fetchData();
-//     console.log(d.getData());
-//     await d.dataToPercentage();
-//     console.log(d.dataPercentage);
-// }
-
-// exec();
-
 module.exports = Webscraper;
