@@ -1,100 +1,38 @@
 'use strict';
 
-// Electron Modules
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
-
-// JQuery
+//const fs = require('fs');
 const $ = require('jquery');
-
-// Chart.js
 const Chart = require('chart.js');
 
 // Modules for web scraping
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-// Indian Govt. Website URL
-const url = 'https://www.mohfw.gov.in/';
+// Custom Webscraper Module
+const Webscraper = require('./webscraper.js');
 
 // Main Data Object
-const data = {};
+let wb;
 
-// Converting String Data Array to Number Array
-function dataCleaner(){
-    let dataset = [];
+// Chart Object
+let chart;
 
-    for(let i = 0; i < data.rawData.length; i++){
-        let e = '';
-        for(let j = 0; j < data.rawData[i].length; j++){
-            if(data.rawData[i][j] != ','){
-                e += data.rawData[i][j];
-            }
-        }
-        dataset[i] = parseInt(e);
-    }
-
-    data.dataset = dataset;
-}
-
-// Data to Percentage Conversion
-function dataToPercentage(){
-    let percentage = [];
-
-    let totalCases = data.dataset[1];
-
-    for(let i = 1; i < data.dataset.length; i++){
-        percentage.push(parseFloat(((data.dataset[i]/totalCases)*100).toFixed(2)));
-    }
-
-    console.log(percentage);
-    data.percentage = percentage;
-}
-
-// Fetching data from govt site
-function fetchData(){
-    let rawData = [];
-
-    axios.get(url)
-    .then((response) => {
-
-        const html = response.data;
-
-        const $ = cheerio.load(html);
-
-        const dataObjects = $('.icount');
-
-        for(let i = 0; i < dataObjects.length; i++){
-            if(dataObjects[`${i}`].children[0].type === 'text'){
-                rawData.push(dataObjects[`${i}`].children[0].data);
-            }
-        }
-
-        console.log(rawData);
-    })
-    .catch((error) => {
-        console.log(error);
-    });
-
-    data.rawData = rawData;
-    
-    console.log('Data Fetch Complete!');
-}
-
-function genratePieChart(){
+function genratePieChart(data){
     // Canvas DOM Object
     const ctxP = document.getElementById("pieChart").getContext('2d');
 
-    const totalCases = data.dataset[1];
-    const totalRecovered = data.dataset[2];
-    const totalDeaths = data.dataset[3];
+    const active_cases = data.active_cases;
+    const cured_cases = data.cured_cases;
+    const total_deaths = data.total_deaths;
 
-    const myPieChart = new Chart(ctxP, {
+    chart = new Chart(ctxP, {
       type: 'doughnut',
       data: {
-        labels: ["Total Cases", "Total Recovered", "Total Deaths"],
+        labels: ["Active Cases", "Total Recovered", "Total Deaths"],
         datasets: [{
-          data: [totalCases, totalRecovered, totalDeaths],
+          data: [active_cases, cured_cases, total_deaths],
           backgroundColor: ["#FDB45C", "#46BFBD","#F7464A"],
           hoverBackgroundColor: ["#FFC870", "#5AD3D1","#FF5A5E"],
           borderColor: "#FFFFFF",
@@ -112,25 +50,15 @@ function genratePieChart(){
     });
 }
 
-// JQuery Code
+// JQuery
 $(document).ready(function(){
     // View States
     let infoView = false;
     let chartView = false;
 
-    const loader = setInterval(() => {
-        if(data.rawData.length){
-            loadData();
-            displayWindow();
-            clearInterval(loader);
-        }
-    },1000);
-
-    function displayWindow(){
-        dataCleaner();
-        console.log(data.dataset);
-        dataToPercentage();
-        genratePieChart();
+    function displayWindow(data){
+        console.log(data);
+        genratePieChart(data);
         $('#loadWindow').fadeOut('fast',() => {
             ipc.send('default-widget');
         });
@@ -138,35 +66,35 @@ $(document).ready(function(){
         // $('html').fadeIn('fast');
     }
 
-    function loadData(){
-        $('#totalTested').text(data.rawData[0]);
-        $('#totalCases').text(data.rawData[1]);
-        $('#totalRecovered').text(data.rawData[2]);
-        $('#totalDeaths').text(data.rawData[3]);
-        $('#totalMigrated').text(data.rawData[4]);
+    function loadData(data){
+        $('#totalCases').text(data.total_cases);
+        $('#activeCases').text(data.active_cases);
+        $('#totalRecovered').text(data.cured_cases);
+        $('#totalDeaths').text(data.total_deaths);
+        $('#totalMigrated').text(data.migrated_cases);
 
         console.log('Data Load Complete!');
     }
 
     // View Toggle Function
-    function toggleView(){
+    function toggleView(data,dataPercentage){
         if(infoView){
-            loadData();
+            loadData(data);
             $('#viewToggleBtn').text('Percentage View');
             infoView = false;
         }
         else{
-            // Total Cases
-            $('#totalCases').text(`${data.rawData[1]} (${data.percentage[0]}%)`);
+            // Active Cases
+            $('#activeCases').text(`${dataPercentage.active_cases} %`);
 
             // Total Recovered
-            $('#totalRecovered').text(`${data.percentage[1]} %`);
+            $('#totalRecovered').text(`${dataPercentage.cured_cases} %`);
 
             // Total Deaths
-            $('#totalDeaths').text(`${data.percentage[2]} %`);
+            $('#totalDeaths').text(`${dataPercentage.total_deaths} %`);
 
             // Total Migrated
-            $('#totalMigrated').text(`${data.percentage[3]} %`);
+            $('#totalMigrated').text(`${dataPercentage.migrated_cases} %`);
 
             $('#viewToggleBtn').text('Detailed View');
 
@@ -194,7 +122,15 @@ $(document).ready(function(){
         }
     }
 
-    fetchData();
+    // Entry Point
+    async function start(){
+        wb = new Webscraper();
+        await wb.fetchData();
+        await wb.dataToPercentage();
+        await loadData(wb.getData());
+        await displayWindow(wb.getData());
+    }
+    start();
 
     // Exit Button Event Listener
     $('#exitBtn').click(() => {
@@ -210,7 +146,9 @@ $(document).ready(function(){
     });
 
     // View Toggle Event Listener
-    $('#viewToggleBtn').click(toggleView);
+    $('#viewToggleBtn').click(() => {
+        toggleView(wb.getData(),wb.getPercentage());
+    });
 
     // Chart Toggle Event Listener
     $('#chartToggleBtn').click(chartToggle);
