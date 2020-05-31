@@ -3,8 +3,8 @@ A simple widget to track Corona Virus (COVID19) spread across India.
 > Built using electronjs
 
 # Screenshots
-![image](https://imgur.com/h7nrk9c.png)
-![image](https://imgur.com/4dNIT9T.png)
+![image](https://imgur.com/h7nrk9c.png | width=100)
+![image](https://imgur.com/4dNIT9T.png | width=75)
 
 # How to use
 1. Clone the repository.
