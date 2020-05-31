@@ -4,6 +4,8 @@ A simple widget to track Corona Virus (COVID19) spread across India.
 
 # Screenshots
 ![image](https://imgur.com/h7nrk9c.png)
+![image](https://imgur.com/SS3tqr6.png)
+![image](https://imgur.com/4dNIT9T.png)
 
 # How to use
 1. Clone the repository.
