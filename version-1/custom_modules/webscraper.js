@@ -19,7 +19,8 @@ class Webscraper{
             const html = response.data;
             
             const $ = cheerio.load(html);
-            
+
+            // HTML Selection
             const d = $('.site-stats-count > ul > li > strong');
 
             let dataArray = [];
@@ -32,12 +33,12 @@ class Webscraper{
             this.data = {
                 total_cases: (dataArray[0] + dataArray[1] + dataArray[2]),
                 active_cases: dataArray[0],
-                cured_cases: dataArray[1],
+                recovered_cases: dataArray[1],
                 total_deaths: dataArray[2],
                 migrated_cases: dataArray[3]
             }
 
-            //console.log(this.data);
+            console.log(this.data);
 
             }).catch((error) => { console.log(error); });
             
@@ -46,7 +47,7 @@ class Webscraper{
     }
 
     getData(){
-        return this.data;
+        return Object.assign({},this.data);
     }
 
     dataToPercentage(){

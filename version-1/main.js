@@ -30,17 +30,19 @@ function createWindow(){
         //def-height = 385
         //expand-height = 590
         icon: appIconPath,
-        width: 300,
-        height: 130,
-        x: (width-310),
+        width: 250,
+        height: 250,
+        x: (width-260),
         y: 10,
+
+        show: false,
+
         frame: false,
         transparent: true,
-        show: false,
         fullscreen: false,
         fullscreenable: false,
         maximizable: false,
-        //resizable: false,
+        resizable: false,
         webPreferences: {
             nodeIntegration: true
         }

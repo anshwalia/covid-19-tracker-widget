@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COVID-19 Tracker v2</title>
+    <!-- Bootstrap 4 CSS-->
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body >
+
+    <div class="app" ng-app="App" ng-controller="App-Ctrl">
+
+        <div class="card rounded-0 m-0 p-0">
+
+            <div class="card-header bg-grey rounded-bottom m-0 p-1">
+                <div class="row m-0 p-0">
+                    <div class="col-2 m-0 p-1">
+                        <img class="icon m-0 float-left" src="./assets/icons/app_icon.png" alt="App Icon">
+                    </div>
+                    <div class="col-8 m-0 p-1 d-flex justify-content-center">
+                        <p class="m-0">COVID-19 TRACKER</p>
+                    </div>
+                    <div class="col-2 m-0 p-1">
+                        <img ng-click="closeApp()" class="icon inverted m-0 float-right" src="./assets/icons/error.png" alt="Close Icon" title="Close App">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body m-0 px-1 pt-2 pb-0">
+
+                <!-- Row 1 -->
+                <div class="row p-0 m-0 mb-2">
+                    
+                    <!-- Col 1 -->
+                    <div class="col-6 m-0 p-0 d-flex justify-content-center">
+                        <div class="card col-11 m-0 p-0">
+                            <div class="card-body bg-grey p-1 d-flex justify-content-center">
+                                <h4 class="heading m-0">{{ tracker_data.total_cases }}</h4>
+                            </div>
+                            <div class="card-footer bg-grey p-1 d-flex justify-content-center">
+                                <p class="m-0 text-primary font-weight-bold">Total Cases</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Col 2 -->
+                    <div class="col-6 m-0 p-0 d-flex justify-content-center">
+                        <div class="card col-11 m-0 p-0">
+                            <div class="card-body bg-grey p-1 d-flex justify-content-center">
+                                <h4 class="heading m-0">{{ tracker_data.active_cases }}</h4>
+                            </div>
+                            <div class="card-footer bg-grey p-1 d-flex justify-content-center">
+                                <p class="m-0 text-warning font-weight-bold">Active</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Row 2 -->
+                <div class="row p-0 m-0 mb-2">
+
+                    <!-- Col 1 -->
+                    <div class="col-6 m-0 p-0 d-flex justify-content-center">
+                        <div class="card col-11 m-0 p-0 ">
+                            <div class="card-body bg-grey p-1 d-flex justify-content-center">
+                                <h4 class="heading m-0">{{ tracker_data.total_recovered }}</h4>
+                            </div>
+                            <div class="card-footer bg-grey p-1 d-flex justify-content-center">
+                                <p class="m-0 text-success font-weight-bold">Recovered</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Col 2 -->
+                    <div class="col-6 m-0 p-0 d-flex justify-content-center">
+                        <div class="card col-11 m-0 p-0">
+                            <div class="card-body bg-grey p-1 d-flex justify-content-center">
+                                <h4 class="heading m-0">{{ tracker_data.total_deaths }}</h4>
+                            </div>
+                            <div class="card-footer bg-grey p-1 d-flex justify-content-center">
+                                <p class="m-0 text-danger font-weight-bold">Deaths</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Row 3 -->
+                <div class="row m-0 p-0">
+                    <!-- Col 1 -->
+                    <div class="col-12 p-0 m-0 bg-grey rounded-top d-flex justify-content-center">
+                        <img class="icon-sm inverted m-0 p-0" src="./assets/icons/chevron-down.png" alt="Chevron Down Icon">
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script type="text/javascript">
+        require('./index');
+    </script>
+</body>
+</html>

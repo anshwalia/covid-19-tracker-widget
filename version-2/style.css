@@ -1,0 +1,72 @@
+html, body{
+    margin: 0px;
+    padding: 0px;
+    background-color: rgba(0,0,0,0);
+    overflow: hidden;
+}
+
+/* html{
+    border: 1px solid green;
+} */
+
+body{
+    /* border: 1px solid red; */
+    color: rgba(255,255,255,0.8);
+}
+
+.app{
+    border: 1px solid #444444;
+    padding: 5px;
+    background-color: rgba(0,0,0,0.3);
+}
+
+.icon{
+    width: 24px;
+    height: 24px;
+}
+
+.icon:hover{
+    cursor: pointer;
+    transform: scale(1.1);
+    transition: ease-in;
+}
+
+.icon-sm{
+    width: 18px;
+    height: 18px;
+}
+
+.icon-sm:hover{
+    cursor: pointer;
+    transform: scale(1.1);
+    transition: ease-in;
+}
+
+.inverted{
+    filter: invert();
+}
+
+/* Custom Card */
+.card{
+    background-color: #333333;
+    border-width: 0px;
+}
+
+.card-header{
+    background-color: #333333;
+    border-width: 0px;
+}
+
+.card-body{
+    background-color: #333333;
+    border-width: 0px;
+}
+
+.card-footer{
+    background-color: #333333;
+    border-width: 0px;
+}
+
+.bg-grey{
+    background-color: #444444;
+}

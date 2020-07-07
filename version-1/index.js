@@ -4,11 +4,6 @@ const electron = require('electron');
 const ipc = electron.ipcRenderer;
 //const fs = require('fs');
 const $ = require('jquery');
-const Chart = require('chart.js');
-
-// Modules for web scraping
-const axios = require('axios');
-const cheerio = require('cheerio');
 
 // IMPORTING CUSTOM MODULES
 const { Webscraper, chart_generator } = require('./custom_modules/module_loader');
@@ -38,7 +33,7 @@ $(document).ready(function(){
     function loadData(data){
         $('#totalCases').text(data.total_cases);
         $('#activeCases').text(data.active_cases);
-        $('#totalRecovered').text(data.cured_cases);
+        $('#totalRecovered').text(data.recovered_cases);
         $('#totalDeaths').text(data.total_deaths);
         $('#totalMigrated').text(data.migrated_cases);
 
