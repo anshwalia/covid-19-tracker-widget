@@ -10,11 +10,8 @@ const Chart = require('chart.js');
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-// Custom Webscraper Module
-const Webscraper = require('./webscraper.js');
-
-// Chart Generatot Module
-const chart_generator = require('./chart_generator.js');
+// IMPORTING CUSTOM MODULES
+const { Webscraper, chart_generator } = require('./custom_modules/module_loader');
 
 // Main Data Object
 let wb;
