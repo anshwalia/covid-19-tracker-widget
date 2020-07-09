@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart Panel</title>
+    <!-- Bootstrap 4 CSS -->
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./chart-panel.css">
+</head>
+<body>
+
+    <div class="container-fluid m-0 p-0">
+        <div class="row m-0 p-0 bg-custom-dark rounded-top">
+            <div class="col-12 m-0 p-1 d-flex justify-content-center">
+                <p class="m-0 text-custom-white">CHART</p>
+            </div>
+        </div>
+        <div class="row m-0 p-0 bg-custom-grey rounded-bottom">
+            <div class="col-12 m-0 p-1 d-flex justify-content-center">
+                <canvas id="cv" style="height: 200px; width: 240px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script type="text/javascript">
+        require('./chart-panel');
+    </script>
+</body>
+</html>

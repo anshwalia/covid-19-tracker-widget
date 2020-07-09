@@ -1,31 +1,40 @@
 'use strict';
 
 // Electron
-const electron = require('electron');
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
-const ipc = electron.ipcMain;
+const { app, BrowserWindow, ipcMain, screen } = require('electron');
+const ipc = ipcMain;
 
 // Required Modules
 const path = require('path');
 const url = require('url');
 
 // Object Variables
-let window;
-let displayWidth;
-let displayHeight;
+let mainWindow;
+let chartWindow;
 
+// Display Object
+let displayObj = {
+    width: null,
+    height: null
+}
+
+// App Icon Path
 const appIconPath = (__dirname + '/assets/icons/app_icon.png');
 
+// Function to create Main Window
 function createWindow(){
-    const display = electron.screen.getPrimaryDisplay();
+    const display = screen.getPrimaryDisplay();
     const width = display.bounds.width;
     const height = display.bounds.height;
 
-    displayWidth = width;
-    displayHeight = height;
+    displayObj = {
+        width: width,
+        height: height
+    }
 
-    window = new BrowserWindow({
+    console.log('Display :', display);
+
+    mainWindow = new BrowserWindow({
         icon: appIconPath,
 
         width: 250,
@@ -48,19 +57,67 @@ function createWindow(){
         }
     });
 
-    window.loadURL(url.format({
+    mainWindow.loadURL(url.format({
         pathname: path.join(__dirname, 'index.html'),
         protocol: 'file',
         slashes: true
     }));
 
-    window.on('closed', function(){
-        window = null;
+    mainWindow.on('closed', function(){
+        mainWindow = null;
     });
 
-    window.on('ready-to-show', () => {
-        window.show();
+    mainWindow.on('ready-to-show', () => {
+        mainWindow.show();
     })
+}
+
+// Function to create Chart Window
+function createChartWindow(){
+
+    chartWindow = new BrowserWindow({
+        // Window Icon
+        icon: path.join(__dirname, '/assets/icons/app_icon.png'),
+
+        // Window Resolution
+        width: 250,
+        height: 250,
+
+        // Window Position
+        x: (displayObj.width - 260),
+        y: 255,
+
+        show: false,
+
+        // frame: false,
+        // transparent: true,
+        // fullscreen: false,
+        // fullscreenable: false,
+        // maximizable: false,
+        // resizable: false,
+        
+        webPreferences: {
+            nodeIntegration: true
+        }
+
+    });
+
+    // Loading HTML File 
+    chartWindow.loadURL(url.format({
+        pathname: './components/chart-panel/chart-panel.html',
+        protocol: 'file',
+        slashes: true
+    }))
+
+    // Event : Window Loaded Fully
+    chartWindow.on('ready-to-show',() => {
+        chartWindow.show();
+    });
+
+    // Event : Window Closed
+    chartWindow.on('closed',() => {
+        window = null;
+    });
 }
 
 // IPC Events
@@ -71,12 +128,12 @@ ipc.on('close-window', function(event){
 
 ipc.on('minimize-window', function(event){
     console.log('Minimize request recieved!');
-    window.minimize();
+    mainWindow.minimize();
 });
 
 ipc.on('expand-widget', (event) => {
     console.log('[Expanded Window Size]');
-    window.setBounds({
+    mainWindow.setBounds({
         x: (displayWidth-410),
         y: 10,
         width: 400,
@@ -86,7 +143,7 @@ ipc.on('expand-widget', (event) => {
 
 ipc.on('default-widget', (event) => {
     console.log('[Default Window Size]');
-    window.setBounds({
+    mainWindow.setBounds({
         x: (displayWidth-310),
         y: 10,
         width: 300,
@@ -94,8 +151,12 @@ ipc.on('default-widget', (event) => {
     });
 });
 
-// App Controls
+ipc.on('create-chart-panel-window',() => {
+    createChartWindow();
+    console.log('Creating Chart Window!');
+});
 
+// App Controls
 app.on('ready', function(){
     createWindow();
     console.log('App Started!');

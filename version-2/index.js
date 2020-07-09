@@ -8,7 +8,7 @@ const ipc = electron.ipcRenderer;
 const angular = require('angular');
 
 // Custom Modules
-const { Webscraper } = require('./custom_modules/module_loader');
+const { Webscraper, FileOPS } = require('./custom_modules/module_loader');
 
 // Angular Module
 const app = angular.module('App',[]);
@@ -17,6 +17,8 @@ const app = angular.module('App',[]);
 app.controller('App-Ctrl',($scope) => {
 
     // Scope Variables
+    $scope.fops = new FileOPS(null);
+
     // Tracker Data Object
     $scope.tracker_data = {
         total_cases: 0,
@@ -44,6 +46,13 @@ app.controller('App-Ctrl',($scope) => {
                     }
                 });
                 console.log($scope.tracker_data);
+
+                // Saving Data to file
+                $scope.fops.saveData($scope.tracker_data);
+
+                // Creating Chart Panel Window
+                ipc.send('create-chart-panel-window');
+
                 clearInterval(fetch_loop);
             }
             else{

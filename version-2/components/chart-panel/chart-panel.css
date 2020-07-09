@@ -1,0 +1,21 @@
+html, body{
+    margin: 0px;
+    padding: 0px;
+    background-color: rgba(0,0,0,0);
+}
+
+.text-custom-white{
+    color: rgba(255,255,255,0.8);
+}
+
+.bg-custom-dark{
+    background-color: #333333;
+}
+
+.bg-custom-grey{
+    background-color: #444444;
+}
+
+.bg-trans-half{
+    background-color: rgba(0,0,0,0.5);
+}

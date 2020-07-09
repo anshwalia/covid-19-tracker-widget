@@ -7,8 +7,13 @@ const fs = require('fs');
 class FileOPS{
 
     // Class Constructor
-    constructor(){
-        this.filePath = './tracker_data.json';
+    constructor(filePath){
+        if(filePath != null){
+            this.filePath = filePath;
+        }
+        else{
+            this.filePath = './data/tracker_data.json';
+        }
         this.tracker_data = null;
     }
 
