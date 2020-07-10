@@ -89,12 +89,12 @@ function createChartWindow(){
 
         show: false,
 
-        // frame: false,
-        // transparent: true,
-        // fullscreen: false,
-        // fullscreenable: false,
-        // maximizable: false,
-        // resizable: false,
+        frame: false,
+        transparent: true,
+        fullscreen: false,
+        fullscreenable: false,
+        maximizable: false,
+        resizable: false,
         
         webPreferences: {
             nodeIntegration: true
@@ -116,13 +116,15 @@ function createChartWindow(){
 
     // Event : Window Closed
     chartWindow.on('closed',() => {
-        window = null;
+        chartWindow = null;
     });
 }
 
 // IPC Events
 ipc.on('close-window', function(event){
     console.log('Close request recieved!');
+    mainWindow = null;
+    chartWindow = null;
     app.quit();
 });
 

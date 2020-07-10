@@ -32,6 +32,7 @@ function createWindow(){
         icon: appIconPath,
         width: 250,
         height: 250,
+        
         x: (width-260),
         y: 10,
 

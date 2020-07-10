@@ -8,7 +8,7 @@ function chart_generator(data,target){
     const ctxP = document.getElementById(target).getContext('2d');
 
     const active_cases = data.active_cases;
-    const recovered_cases = data.recovered_cases;
+    const total_recovered = data.total_recovered;
     const total_deaths = data.total_deaths;
 
     const chart = new Chart(ctxP, {
@@ -16,19 +16,23 @@ function chart_generator(data,target){
       data: {
         labels: ["Active Cases", "Total Recovered", "Total Deaths"],
         datasets: [{
-          data: [active_cases, recovered_cases, total_deaths],
-          backgroundColor: ["#FDB45C", "#46BFBD","#F7464A"],
-          hoverBackgroundColor: ["#FFC870", "#5AD3D1","#FF5A5E"],
+          data: [active_cases, total_recovered, total_deaths],
+          backgroundColor: ["#F0AD4E", "#5CB85C","#D9534F"],
+          hoverBackgroundColor: ["#F0AD4E", "#5CB85C","#D9534F"],
           borderColor: "#FFFFFF",
-          //borderWidth: 2,
+          borderWidth: 1,
         }]
       },
       options: {
+        layout: {
+          padding: {
+            top: 5,
+            bottom: 5,
+          }
+        },
         responsive: true,
         legend: {
-            labels: {
-                fontColor: 'white'
-            }
+          display: false,
         }
       }
     });

@@ -9,7 +9,7 @@ fops.loadData();
 
 let chart_loop = setInterval(() => {
     if(fops.tracker_data != null){
-        chart_generator(fops.tracker_data,'#cv');
+        chart_generator(fops.tracker_data,'chartCanvas');
         clearInterval(chart_loop);
     }
     else{
