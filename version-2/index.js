@@ -1,8 +1,7 @@
 'use strict';
 
 // ElectronJS
-const electron = require('electron');
-const ipc = electron.ipcRenderer;
+const { ipcRenderer : ipc } = require('electron');
 
 // AngularJS
 const angular = require('angular');
@@ -27,6 +26,7 @@ let td_loop = setInterval(() => {
     }
 },1000);
 
+// IPC Event : Receiving Tracker Data
 ipc.on('recieve-tracker-data',(event,data) => {
     td = Object.assign({},data);
     console.log('Tracker Data :',td);

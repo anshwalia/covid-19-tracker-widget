@@ -1,8 +1,7 @@
 'use strict';
 
 // Electron
-const { app, BrowserWindow, ipcMain, screen } = require('electron');
-const ipc = ipcMain;
+const { app, BrowserWindow, ipcMain : ipc, screen } = require('electron');
 
 // Node Modules
 const path = require('path');
@@ -27,6 +26,7 @@ const webscp = new Webscraper();
 console.log('[ Fetching Tracker Data ]');
 webscp.fetchData();
 
+// Fetch Loop
 let fetch_loop = setInterval(() => {
     if(webscp.data != null){
         // Upadting Tracker Data Object
@@ -49,9 +49,11 @@ let fetch_loop = setInterval(() => {
     }
 },1000);
 
-
-let mainWindow;
-let chartWindow;
+// Windows Object
+const windows = {
+    main: null,
+    chart: null
+}
 
 // Display Object
 let displayObj = {
@@ -81,7 +83,7 @@ function createMainWindow(){
 
     console.log('Display :', displayObj);
 
-    mainWindow = new BrowserWindow({
+    windows.main = new BrowserWindow({
         // Window Icon
         icon: appIconPath,
 
@@ -109,25 +111,25 @@ function createMainWindow(){
         }
     });
 
-    mainWindow.loadURL(url.format({
+    windows.main.loadURL(url.format({
         pathname: path.join(__dirname, 'index.html'),
         protocol: 'file',
         slashes: true
     }));
 
-    mainWindow.on('closed', function(){
+    windows.main.on('closed', function(){
         mainWindow = null;
     });
 
-    mainWindow.on('ready-to-show', () => {
-        mainWindow.show();
+    windows.main.on('ready-to-show', () => {
+        windows.main.show();
     });
 }
 
 // Function to create Chart Window
 function createChartWindow(){
 
-    chartWindow = new BrowserWindow({
+    windows.chart = new BrowserWindow({
         // Window Icon
         icon: appIconPath,
 
@@ -157,14 +159,14 @@ function createChartWindow(){
     });
 
     // Loading HTML File 
-    chartWindow.loadURL(url.format({
+    windows.chart.loadURL(url.format({
         pathname: './components/chart-panel/chart-panel.html',
         protocol: 'file',
         slashes: true
     }));
 
     // Event : Window Closed
-    chartWindow.on('closed',() => {
+    windows.chart.on('closed',() => {
         chartWindow = null;
     });
 }
@@ -190,8 +192,8 @@ function hideWindow(window){
 
 // Function to show chart window
 function showChartWindow(){
-    if(showWindow(chartWindow)){
-        chartWindow.webContents.send('window-slide-down');
+    if(showWindow(windows.chart)){
+        windows.chart.webContents.send('window-slide-down');
         app_states.chartView = true;
         console.log('[ Chart Window Visible ]');
     }
@@ -199,9 +201,9 @@ function showChartWindow(){
 
 // Function hide chart window
 function hideChartWindow(){
-    chartWindow.webContents.send('window-slide-up');
+    windows.chart.webContents.send('window-slide-up');
     setTimeout(() => {
-        if(hideWindow(chartWindow)){
+        if(hideWindow(windows.chart)){
             console.log('[ Chart Window Hidden ]');
             app_states.chartView = false;
         }
@@ -213,15 +215,15 @@ function findWindow(windowID){
     switch(windowID){
         case 0:
             console.log(windowID,':','Main Window');
-            return mainWindow;
+            return windows.main;
         break;
         case 1:
             console.log(windowID,':','Chart Window');
-            return chartWindow;
+            return windows.chart;
         break;
         default:
             console.log(windowID,':','Main Window');
-            return mainWindow;
+            return windows.main;
     }
 }
 
@@ -244,15 +246,15 @@ ipc.on('send-tracker-data',(event,windowID) => {
 // IPC Event : Close App
 ipc.on('close-window',(event) => {
     console.log('Close request recieved!');
-    mainWindow = null;
-    chartWindow = null;
+    windows.main = null;
+    windows.chart = null;
     app.quit();
 });
 
 // IPC Event : Minimize App
 ipc.on('minimize-window',(event) => {
     console.log('Minimize request recieved!');
-    mainWindow.minimize();
+    windows.main.minimize();
 });
 
 // IPC Event : Toggle Chart Window
@@ -267,22 +269,27 @@ ipc.on('toggle-chart-window',() => {
     }
 });
 
-// App Events
+// APP EVENTS
+
+// App Ready
 app.on('ready', function(){
     createMainWindow();
     createChartWindow();
     console.log('App Started!');
 });
 
+// App Windows All Closed : App Close
 app.on('window-all-closed', function(){
     if(process.platform !== 'darwin'){
         app.quit();
     }
 });
 
+// App Window Activation
 app.on('activate', function(){
     if(app === null){
-        createWindow();
+        createMainWindow();
+        createChartWindow();
     }
 });
 

@@ -1,8 +1,7 @@
 'use strict';
 
 // Electron Modules
-const { ipcRenderer } = require('electron');
-const ipc = ipcRenderer;
+const { ipcRenderer : ipc } = require('electron');
 
 // Custom Module
 const { chart_generator, animations } = require('../../custom_modules/module_loader');
@@ -10,6 +9,7 @@ const { chart_generator, animations } = require('../../custom_modules/module_loa
 // DOM Objects
 const body = document.querySelector('body');
 
+// Tracker Data Object
 let tracker_data = null;
 
 // IPC Event : Tracker Data Recieveing
@@ -18,6 +18,7 @@ ipc.on('recieve-tracker-data',(event,data) => {
     console.log('Tracker Data Recieved!');
 });
 
+// Chart Creating Loop
 let chart_loop = setInterval(() => {
     if(tracker_data != null){
         chart_generator(tracker_data,'chartCanvas');
