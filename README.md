@@ -1,5 +1,8 @@
-# COVID-19 Tracker Widget
-A simple widget to track Corona Virus (COVID19) spread across India.
+<img src="./version-1/assets/icons/app_icon.png" width="128px" height="128px">
+
+# COVID-19 TRACKER WIDGET
+
+A simple widget to track Corona Virus (COVID-19) spread across India.
 
 ## Tech Stack
 * ElectronJS
@@ -10,6 +13,7 @@ A simple widget to track Corona Virus (COVID19) spread across India.
   * axios
   * cheerio
   * chart.js
+  * anime.js
 
 
 ## Screenshots
