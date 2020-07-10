@@ -4,11 +4,52 @@
 const { app, BrowserWindow, ipcMain, screen } = require('electron');
 const ipc = ipcMain;
 
-// Required Modules
+// Node Modules
 const path = require('path');
 const url = require('url');
 
+// Custom Modules
+const { Webscraper, FileOPS } = require('./custom_modules/module_loader');
+
 // Object Variables
+let tracker_data = {
+    total_cases: 0,
+    active_cases: 0,
+    total_recovered: 0,
+    total_deaths: 0
+}
+
+// File Operstions Object
+const fops = new FileOPS('./data/tracker_data.json');
+
+// Webscraper Object
+const webscp = new Webscraper();
+console.log('[ Fetching Tracker Data ]');
+webscp.fetchData();
+
+let fetch_loop = setInterval(() => {
+    if(webscp.data != null){
+        // Upadting Tracker Data Object
+        tracker_data = {
+            total_cases: webscp.data.total_cases,
+            active_cases: webscp.data.active_cases,
+            total_recovered: webscp.data.total_recovered,
+            total_deaths: webscp.data.total_deaths
+        }
+        app_states.tracker_data_fetched = true;
+        console.log('[ Tracker Data Fetched ]');
+
+        // Saving Tracker Data
+        fops.saveData(tracker_data);
+
+        clearInterval(fetch_loop);
+    }
+    else{
+        console.log('.');
+    }
+},1000);
+
+
 let mainWindow;
 let chartWindow;
 
@@ -20,6 +61,7 @@ let displayObj = {
 
 // Appliction States
 const app_states = {
+    tracker_data_fetched: false,
     chartView: false,
 }
 
@@ -27,7 +69,7 @@ const app_states = {
 const appIconPath = (__dirname + '/assets/icons/app_icon.png');
 
 // Function to create Main Window
-function createWindow(){
+function createMainWindow(){
     const display = screen.getPrimaryDisplay();
     const width = display.bounds.width;
     const height = display.bounds.height;
@@ -37,19 +79,24 @@ function createWindow(){
         height: height
     }
 
-    console.log('Display :', display);
+    console.log('Display :', displayObj);
 
     mainWindow = new BrowserWindow({
+        // Window Icon
         icon: appIconPath,
 
+        // Window Resolution
         width: 250,
         height: 250,
 
+        // Window Position
         x: (width-260),
         y: 10,
 
+        // Window Visibility
         show: false,
 
+        // Window Options
         frame: false,
         transparent: true,
         fullscreen: false,
@@ -82,7 +129,7 @@ function createChartWindow(){
 
     chartWindow = new BrowserWindow({
         // Window Icon
-        icon: path.join(__dirname, '/assets/icons/app_icon.png'),
+        icon: appIconPath,
 
         // Window Resolution
         width: 250,
@@ -92,8 +139,10 @@ function createChartWindow(){
         x: (displayObj.width - 260),
         y: 255,
 
+        // Window Visiblilty
         show: false,
 
+        // Window Options
         frame: false,
         transparent: true,
         fullscreen: false,
@@ -159,43 +208,51 @@ function hideChartWindow(){
     },1000);
 }
 
+// Function to identify window
+function findWindow(windowID){
+    switch(windowID){
+        case 0:
+            console.log(windowID,':','Main Window');
+            return mainWindow;
+        break;
+        case 1:
+            console.log(windowID,':','Chart Window');
+            return chartWindow;
+        break;
+        default:
+            console.log(windowID,':','Main Window');
+            return mainWindow;
+    }
+}
+
 // IPC Events
-ipc.on('close-window', function(event){
+
+// IPC Event : Tracker Data Requested
+ipc.on('send-tracker-data',(event,windowID) => {
+    console.log('WindowID :',windowID);
+    let window = findWindow(windowID);
+
+    if(app_states.tracker_data_fetched){
+        window.webContents.send('recieve-tracker-data',Object.assign({},tracker_data));
+        console.log('Sending Tarcker Data!');
+    }
+    else{
+        console.log('Tracker Data Not Fetched!');
+    }
+});
+
+// IPC Event : Close App
+ipc.on('close-window',(event) => {
     console.log('Close request recieved!');
     mainWindow = null;
     chartWindow = null;
     app.quit();
 });
 
-ipc.on('minimize-window', function(event){
+// IPC Event : Minimize App
+ipc.on('minimize-window',(event) => {
     console.log('Minimize request recieved!');
     mainWindow.minimize();
-});
-
-ipc.on('expand-widget', (event) => {
-    console.log('[Expanded Window Size]');
-    mainWindow.setBounds({
-        x: (displayWidth-410),
-        y: 10,
-        width: 400,
-        height: 590
-    });
-});
-
-ipc.on('default-widget', (event) => {
-    console.log('[Default Window Size]');
-    mainWindow.setBounds({
-        x: (displayWidth-310),
-        y: 10,
-        width: 300,
-        height: 385
-    });
-});
-
-// IPC Event : Create Chart Window
-ipc.on('create-chart-window',() => {
-    createChartWindow();
-    console.log('Creating Chart Window!');
 });
 
 // IPC Event : Toggle Chart Window
@@ -210,9 +267,10 @@ ipc.on('toggle-chart-window',() => {
     }
 });
 
-// App Controls
+// App Events
 app.on('ready', function(){
-    createWindow();
+    createMainWindow();
+    createChartWindow();
     console.log('App Started!');
 });
 

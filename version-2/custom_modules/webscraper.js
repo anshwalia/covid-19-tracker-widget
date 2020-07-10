@@ -8,7 +8,7 @@ class Webscraper{
     
     constructor(){
         this.url = 'https://www.mohfw.gov.in/';
-        this.data = new Object();
+        this.data = null;
         this.dataPercentage = new Object();
     }
 
@@ -33,7 +33,7 @@ class Webscraper{
             this.data = {
                 total_cases: (dataArray[0] + dataArray[1] + dataArray[2]),
                 active_cases: dataArray[0],
-                recovered_cases: dataArray[1],
+                total_recovered: dataArray[1],
                 total_deaths: dataArray[2],
                 migrated_cases: dataArray[3]
             }
