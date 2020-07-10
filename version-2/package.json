@@ -14,7 +14,8 @@
     "bootstrap": "^4.5.0",
     "chart.js": "^2.9.3",
     "cheerio": "^1.0.0-rc.3",
-    "jquery": "^3.5.1"
+    "jquery": "^3.5.1",
+    "animejs": "^3.2.0"
   },
   "devDependencies": {
     "electron": "^8.3.0",

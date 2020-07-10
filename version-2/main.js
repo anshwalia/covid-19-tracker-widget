@@ -18,6 +18,11 @@ let displayObj = {
     height: null
 }
 
+// Appliction States
+const app_states = {
+    chartView: false,
+}
+
 // App Icon Path
 const appIconPath = (__dirname + '/assets/icons/app_icon.png');
 
@@ -69,7 +74,7 @@ function createWindow(){
 
     mainWindow.on('ready-to-show', () => {
         mainWindow.show();
-    })
+    });
 }
 
 // Function to create Chart Window
@@ -107,17 +112,51 @@ function createChartWindow(){
         pathname: './components/chart-panel/chart-panel.html',
         protocol: 'file',
         slashes: true
-    }))
-
-    // Event : Window Loaded Fully
-    chartWindow.on('ready-to-show',() => {
-        chartWindow.show();
-    });
+    }));
 
     // Event : Window Closed
     chartWindow.on('closed',() => {
         chartWindow = null;
     });
+}
+
+// Function to show window seamlessly
+function showWindow(window){
+    window.setOpacity(0)
+    window.show()
+    setTimeout(() => {
+        window.setOpacity(1);
+    }, 1000/60);
+    return true;
+}
+
+// Function to hidw window seamlessly
+function hideWindow(window){
+    setTimeout(() => {
+        window.setOpacity(0);
+        window.hide();
+    },1000/60);
+    return true;
+}
+
+// Function to show chart window
+function showChartWindow(){
+    if(showWindow(chartWindow)){
+        chartWindow.webContents.send('window-slide-down');
+        app_states.chartView = true;
+        console.log('[ Chart Window Visible ]');
+    }
+}
+
+// Function hide chart window
+function hideChartWindow(){
+    chartWindow.webContents.send('window-slide-up');
+    setTimeout(() => {
+        if(hideWindow(chartWindow)){
+            console.log('[ Chart Window Hidden ]');
+            app_states.chartView = false;
+        }
+    },1000);
 }
 
 // IPC Events
@@ -153,9 +192,22 @@ ipc.on('default-widget', (event) => {
     });
 });
 
-ipc.on('create-chart-panel-window',() => {
+// IPC Event : Create Chart Window
+ipc.on('create-chart-window',() => {
     createChartWindow();
     console.log('Creating Chart Window!');
+});
+
+// IPC Event : Toggle Chart Window
+ipc.on('toggle-chart-window',() => {
+    if(app_states.chartView){
+        console.log('[ Hiding Chart Window ]');
+        hideChartWindow();
+    }
+    else{
+        console.log('[ Showing Chart Window ]');
+        showChartWindow();
+    }
 });
 
 // App Controls

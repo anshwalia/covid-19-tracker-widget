@@ -51,7 +51,7 @@ app.controller('App-Ctrl',($scope) => {
                 $scope.fops.saveData($scope.tracker_data);
 
                 // Creating Chart Panel Window
-                ipc.send('create-chart-panel-window');
+                ipc.send('create-chart-window');
 
                 clearInterval(fetch_loop);
             }
@@ -64,6 +64,11 @@ app.controller('App-Ctrl',($scope) => {
     // Function to Close App
     $scope.closeApp = () => {
         ipc.send('close-window');
+    }
+
+    // Function to toggle chart window
+    $scope.toggleChartWindow = () => {
+        ipc.send('toggle-chart-window');
     }
 
     // Start Point
